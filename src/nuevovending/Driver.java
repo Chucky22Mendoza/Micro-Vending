@@ -108,10 +108,11 @@ public class Driver {
      */
     public void on_vending() throws InterruptedException {
         try {
-            Thread.sleep(15);
-            System.out.println(serialPort.getPortName());
+            Thread.sleep(5);
             serialPort.writeByte(byteInicio1);
+            Thread.sleep(5);
             serialPort.writeByte(byteInicio2);
+            Thread.sleep(5);
             //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
@@ -125,10 +126,11 @@ public class Driver {
      */
     public void green_led() throws InterruptedException {
         try {
-            Thread.sleep(15);
-            System.out.println(serialPort.getPortName());
+            Thread.sleep(5);
             serialPort.writeByte(byteVerde1);
+            Thread.sleep(5);
             serialPort.writeByte(byteVerde2);
+            Thread.sleep(5);
             //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
@@ -142,10 +144,11 @@ public class Driver {
      */
     public void yellow_led() throws InterruptedException {
         try {
-            Thread.sleep(15);
-            System.out.println(serialPort.getPortName());
+            Thread.sleep(5);
             serialPort.writeByte(byteAmarillo1);
+            Thread.sleep(5);
             serialPort.writeByte(byteAmarillo2);
+            Thread.sleep(5);
             //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
@@ -159,10 +162,11 @@ public class Driver {
      */
     public void red_led() throws InterruptedException {
         try {
-            Thread.sleep(15);
-            System.out.println(serialPort.getPortName());
+            Thread.sleep(5);
             serialPort.writeByte(byteRojo1);
+            Thread.sleep(5);
             serialPort.writeByte(byteRojo2);
+            Thread.sleep(5);
             //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
@@ -176,10 +180,11 @@ public class Driver {
      */
     public void leds_off() throws InterruptedException {
         try {
-            Thread.sleep(15);
-            System.out.println(serialPort.getPortName());
+            Thread.sleep(5);
             serialPort.writeByte(byteApagado1);
+            Thread.sleep(5);
             serialPort.writeByte(byteApagado2);
+            Thread.sleep(5);
             //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
@@ -187,16 +192,17 @@ public class Driver {
     }
     
     /**
-     * Metodo para apagar LEDs
+     * Metodo para obtener coordenadas de GPS
      *
      * @throws InterruptedException
      */
     public void coord_GPS() throws InterruptedException {
         try {
-            Thread.sleep(15);
-            System.out.println(serialPort.getPortName());
+            Thread.sleep(5);
             serialPort.writeByte(byteGPS1);
+            Thread.sleep(5);
             serialPort.writeByte(byteGPS2);
+            Thread.sleep(5);
             System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
@@ -204,18 +210,21 @@ public class Driver {
     }
     
     /**
-     * Escritura sobre puerto para detectar una respuesta
+     * Mandar bytes de cobro
      * 
      * @throws InterruptedException
      */
-    public void detect_port() throws InterruptedException {
+    public void cobro(byte byteHex1, byte byteHex2) throws InterruptedException {
         try {
-            Thread.sleep(15);
-            System.out.println(serialPort.getPortName());
-            serialPort.writeByte(byteInicio1);
-            serialPort.writeByte(byteInicio2);
-            System.out.println("-->" + getdataHex());
-            
+            Thread.sleep(5);
+            serialPort.writeByte(byteCobro1);
+            Thread.sleep(5);
+            //serialPort.writeByte(byteHex2);
+            serialPort.writeByte(byteCobro2);
+            Thread.sleep(5);
+            //serialPort.writeByte(byteHex1);
+            serialPort.writeByte(byteCobro3);
+            Thread.sleep(5);
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
