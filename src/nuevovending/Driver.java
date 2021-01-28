@@ -15,9 +15,9 @@ import jssc.SerialPortException;
  * @author Jesús Mendoza Verduzco
  */
 public class Driver {
-    boolean final_vending = false;
-    private static byte Byte = (byte) 0xF1;
-    private static byte Byte1 = (byte) 0x00;
+    //boolean final_vending = false;
+    private static byte byteFin1 = (byte) 0xF1;
+    private static byte byteFin2 = (byte) 0x00;
 
     private static byte byteInicio1 = (byte) 0xF1;
     private static byte byteInicio2 = (byte) 0x01;
@@ -41,8 +41,7 @@ public class Driver {
     private static byte byteCobro2 = (byte) 0x00;
     private static byte byteCobro3 = (byte) 0x0A;
     
-    public String hostVending = "";
-    public SerialPort serialPort = new SerialPort(hostVending);
+    public SerialPort serialPort;
 
     /**
      * Metodo para seleccionar modo de operacion compatible con sistema
@@ -52,9 +51,8 @@ public class Driver {
      * @throws java.lang.InterruptedException
      */
     public void osWindows(String port) throws InterruptedException {
-        hostVending = port;
-        serialPort = new SerialPort(hostVending);
-        Thread.sleep(1000);
+        serialPort = new SerialPort(port);
+        Thread.sleep(15);
     }
 
     /**
@@ -65,9 +63,8 @@ public class Driver {
      * @throws java.lang.InterruptedException 
      */
     public void osLinux(String port) throws InterruptedException {
-        hostVending = "/dev/" + port;
-        serialPort = new SerialPort(hostVending);
-        Thread.sleep(1000);
+        serialPort = new SerialPort("/dev/" + port);
+        Thread.sleep(15);
     }
 
     /**
@@ -92,9 +89,9 @@ public class Driver {
     public String getdataHex() {
         String respuesta = "";
         try {
-            //byte[] buffer = serialPort.readBytes(10);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
-            //respuesta = toHexString(buffer);
-            respuesta = serialPort.readHexString();
+            byte[] buffer = serialPort.readBytes(2);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
+            respuesta = toHexString(buffer);
+            //respuesta = serialPort.readHexString();
         } catch (SerialPortException e) {
             System.out.println("Error al recibir datos del puerto: " + e.getMessage());
         }
@@ -237,9 +234,11 @@ public class Driver {
      */
     public void off_vending() throws InterruptedException {
         try {
-            Thread.sleep(15);
-            serialPort.writeByte(Byte);
-            serialPort.writeByte(Byte1);
+            Thread.sleep(5);
+            serialPort.writeByte(byteFin1);
+            Thread.sleep(5);
+            serialPort.writeByte(byteFin2);
+            Thread.sleep(5);
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
