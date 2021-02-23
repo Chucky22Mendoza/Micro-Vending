@@ -243,22 +243,23 @@ public class NuevoVending {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, SerialPortException {
-        boolean salir = false;
+        boolean isExit = false;
         Scanner in = new Scanner(System.in);
         
         try {
-            String port = "ttyUSB1";
+            String port = "ttyUSB0";
             os(false, port);
             openPort();
-            hilo.setPriority(hilo.MAX_PRIORITY);
+            hilo.setPriority(Thread.MAX_PRIORITY);
             hilo.start();
             threadCoinVending.start();
         } catch (InterruptedException | SerialPortException ex) {
             System.out.println(ex.getMessage());
         }
         
-        while (!salir) {
-            System.out.println("Elige una opción");
+        while (!isExit) {
+            System.out.println("");
+            System.out.println("Opciones de tarjeta de cobro");
             System.out.println("1) Led verde");
             System.out.println("2) Led amarillo");
             System.out.println("3) Led rojo");
@@ -266,7 +267,9 @@ public class NuevoVending {
             System.out.println("5) Coordenadas de GPS");
             System.out.println("6) Cobrar");
             System.out.println("0) Salir");
+            System.out.print("Elige una opción: ");
             int opt = in.nextInt();
+            System.out.println("");
             switch (opt) {
                 case 1:
                     green();
@@ -283,15 +286,17 @@ public class NuevoVending {
                     gps();
                     break;
                 case 6:
+                    System.out.println("");
                     System.out.print("Dinero a cobrar: ");
                     int dineros = in.nextInt();
+                    System.out.println("");
                     cobrar(dineros);
                     break;
                 case 0:
-                    salir = true;
+                    isExit = true;
                     break;
                 default:
-                    salir = true;
+                    isExit = true;
                     break;
             }
         }
@@ -301,5 +306,6 @@ public class NuevoVending {
         endVending();
         closePort();
         isCoinService = true;
+        System.exit(0);
     }
 }
