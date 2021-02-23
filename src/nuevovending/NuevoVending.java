@@ -231,8 +231,9 @@ public class NuevoVending {
             while (!isCoinService) {
                 while (isFalseCoin) {
                     double coin = coincatch();
-                
-                    System.out.println(coin);
+                    if (coin > 0) { 
+                        System.out.println(coin);
+                    }
                 }
             }
         }
