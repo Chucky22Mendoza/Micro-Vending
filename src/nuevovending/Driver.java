@@ -16,32 +16,33 @@ import jssc.SerialPortException;
  */
 public class Driver {
     //boolean final_vending = false;
-    private static byte byteFin1 = (byte) 0xF1;
-    private static byte byteFin2 = (byte) 0x00;
+    private final byte byteFin1 = (byte) 0xF1;
+    private final byte byteFin2 = (byte) 0x00;
 
-    private static byte byteInicio1 = (byte) 0xF1;
-    private static byte byteInicio2 = (byte) 0x01;
+    private final byte byteInicio1 = (byte) 0xF1;
+    private final byte byteInicio2 = (byte) 0x01;
     
-    private static byte byteGPS1 = (byte) 0xF1;
-    private static byte byteGPS2 = (byte) 0x10;
+    private final byte byteGPS1 = (byte) 0xF1;
+    private final byte byteGPS2 = (byte) 0x10;
     
-    private static byte byteVerde1 = (byte) 0xF1;
-    private static byte byteVerde2 = (byte) 0x11;
+    private final byte byteVerde1 = (byte) 0xF1;
+    private final byte byteVerde2 = (byte) 0x11;
     
-    private static byte byteAmarillo1 = (byte) 0xF1;
-    private static byte byteAmarillo2 = (byte) 0x12;
+    private final byte byteAmarillo1 = (byte) 0xF1;
+    private final byte byteAmarillo2 = (byte) 0x12;
     
-    private static byte byteRojo1 = (byte) 0xF1;
-    private static byte byteRojo2 = (byte) 0x13;
+    private final byte byteRojo1 = (byte) 0xF1;
+    private final byte byteRojo2 = (byte) 0x13;
     
-    private static byte byteApagado1 = (byte) 0xF1;
-    private static byte byteApagado2 = (byte) 0x14;
+    private final byte byteApagado1 = (byte) 0xF1;
+    private final byte byteApagado2 = (byte) 0x14;
     
-    private static byte byteCobro1 = (byte) 0xA1;
-    private static byte byteCobro2 = (byte) 0x00;
-    private static byte byteCobro3 = (byte) 0x0A;
+    private final byte byteCobro1 = (byte) 0xA1;
+    private final byte byteCobro2 = (byte) 0x00;
+    private final byte byteCobro3 = (byte) 0x0A;
     
-    public SerialPort serialPort;
+    private String hostVending = "";
+    private SerialPort serialPort = new SerialPort(hostVending);
 
     /**
      * Metodo para seleccionar modo de operacion compatible con sistema
@@ -51,7 +52,8 @@ public class Driver {
      * @throws java.lang.InterruptedException
      */
     public void osWindows(String port) throws InterruptedException {
-        serialPort = new SerialPort(port);
+        hostVending = port;
+        serialPort = new SerialPort(hostVending);
         Thread.sleep(15);
     }
 
@@ -63,7 +65,8 @@ public class Driver {
      * @throws java.lang.InterruptedException 
      */
     public void osLinux(String port) throws InterruptedException {
-        serialPort = new SerialPort("/dev/" + port);
+        hostVending = "/dev/" + port;
+        serialPort = new SerialPort(hostVending);
         Thread.sleep(15);
     }
 
@@ -72,7 +75,7 @@ public class Driver {
      *
      * @return
      */
-    public boolean vendingAlive() {
+    public boolean isVendingAlive() {
         try {
             System.out.println("Status Vending: " + Arrays.toString(serialPort.getLinesStatus()));
             return true;
@@ -91,7 +94,6 @@ public class Driver {
         try {
             byte[] buffer = serialPort.readBytes(2);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
             respuesta = toHexString(buffer);
-            //respuesta = serialPort.readHexString();
         } catch (SerialPortException e) {
             System.out.println("Error al recibir datos del puerto: " + e.getMessage());
         }
@@ -105,12 +107,9 @@ public class Driver {
      */
     public void on_vending() throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteInicio1);
-            Thread.sleep(5);
             serialPort.writeByte(byteInicio2);
-            Thread.sleep(5);
-            //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
@@ -123,12 +122,9 @@ public class Driver {
      */
     public void green_led() throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteVerde1);
-            Thread.sleep(5);
             serialPort.writeByte(byteVerde2);
-            Thread.sleep(5);
-            //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
@@ -141,12 +137,9 @@ public class Driver {
      */
     public void yellow_led() throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteAmarillo1);
-            Thread.sleep(5);
             serialPort.writeByte(byteAmarillo2);
-            Thread.sleep(5);
-            //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
@@ -159,12 +152,9 @@ public class Driver {
      */
     public void red_led() throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteRojo1);
-            Thread.sleep(5);
             serialPort.writeByte(byteRojo2);
-            Thread.sleep(5);
-            //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
@@ -177,12 +167,9 @@ public class Driver {
      */
     public void leds_off() throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteApagado1);
-            Thread.sleep(5);
             serialPort.writeByte(byteApagado2);
-            Thread.sleep(5);
-            //System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
@@ -195,12 +182,9 @@ public class Driver {
      */
     public void coord_GPS() throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteGPS1);
-            Thread.sleep(5);
             serialPort.writeByte(byteGPS2);
-            Thread.sleep(5);
-            System.out.println("-->" + getdataHex());
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
@@ -209,19 +193,15 @@ public class Driver {
     /**
      * Mandar bytes de cobro
      * 
+     * @param byteHex1
      * @throws InterruptedException
      */
-    public void cobro(byte byteHex1, byte byteHex2) throws InterruptedException {
+    public void cobro(byte byteHex1) throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteCobro1);
-            Thread.sleep(5);
-            //serialPort.writeByte(byteHex2);
             serialPort.writeByte(byteCobro2);
-            Thread.sleep(5);
-            //serialPort.writeByte(byteHex1);
-            serialPort.writeByte(byteCobro3);
-            Thread.sleep(5);
+            serialPort.writeByte(byteHex1);
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
@@ -234,11 +214,9 @@ public class Driver {
      */
     public void off_vending() throws InterruptedException {
         try {
-            Thread.sleep(5);
+            Thread.sleep(15);
             serialPort.writeByte(byteFin1);
-            Thread.sleep(5);
             serialPort.writeByte(byteFin2);
-            Thread.sleep(5);
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }

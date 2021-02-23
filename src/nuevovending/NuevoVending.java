@@ -5,7 +5,7 @@
  */
 package nuevovending;
 
-import static com.sun.org.apache.bcel.internal.classfile.Utility.toHexString;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jssc.SerialPort;
@@ -16,73 +16,193 @@ import jssc.SerialPortException;
  * @author yimibus
  */
 public class NuevoVending {
-    private static boolean coinService = true;
-    private static Driver yimiLibrary = new Driver();
-    private boolean monedas_full = true;
-    String moneda = "";
-    private double coinConvert;
+    private static final Driver yimiLibrary = new Driver();
+    private static volatile boolean isCoinService = false;
+    private static volatile boolean isFalseCoin = true;
+    private static volatile boolean isMonedasFull = false;
+    private static volatile boolean isFalseThread = true;
+    
+    private static volatile String moneda = "";
+    private static volatile double coinConvert;
+    
+    /**
+     * Metodo para ejecutar el hilo de transmición principal
+     */
+    public void threadStart() {
+        isFalseThread = true;
+    }
+    
+    /**
+     * Metodo para parar el hilo de transmición principal
+     */
+    public void threadStop() {
+        isFalseThread = false;
+    }
+    
+    /**
+     * 
+     * Elegir sistema operativo para vending
+     * 
+     * @param osflag
+     * @param portName
+     * @throws InterruptedException 
+     */
+    public static void os(boolean isOS,String portName) throws InterruptedException {
+        if (isOS) {
+            yimiLibrary.osWindows(portName);
+        }else {
+            yimiLibrary.osLinux(portName);
+        }
+    }
+    
+    /**
+     * Iniciar hilo de vending
+     * 
+     * @throws InterruptedException 
+     */
+    public static void initVending() throws InterruptedException {
+        isFalseThread = true;
+        Thread.sleep(100);
+    }
+    
+    /**
+     * Detener hilo de vending
+     * 
+     * @throws InterruptedException 
+     */
+    public static void endVending() throws InterruptedException {
+        isFalseThread = false;
+        Thread.sleep(100);
+    }
+    
+    /**
+     * Iniciar vending
+     * 
+     * @throws InterruptedException
+     * @throws SerialPortException 
+     */
+    public static void startVending() throws InterruptedException, SerialPortException {
+        yimiLibrary.on_vending();
+        Thread.sleep(100);
+    }
+    
+    /**
+     * Detener vending
+     * 
+     * @throws InterruptedException
+     * @throws SerialPortException 
+     */
+    public static void stopVending() throws InterruptedException, SerialPortException {
+        yimiLibrary.off_vending();
+        Thread.sleep(100);
+    }
+    
+    /**
+     * Cerrar puerto de vending
+     * 
+     * @throws SerialPortException
+     * @throws InterruptedException 
+     */
+    public static void closePort() throws SerialPortException, InterruptedException {
+        yimiLibrary.close_port();
+        Thread.sleep(100);
+    }
+    
+    /**
+     * Abrir puerto de vending
+     * 
+     * @throws SerialPortException
+     * @throws InterruptedException 
+     */
+    public static void openPort() throws SerialPortException, InterruptedException {
+        yimiLibrary.open_port();
+        Thread.sleep(100);
+    }
+    
+    /**
+     * Iniciar hilo que detecta las monedas que ingresan
+     */
+    public static void startListenerVending() {
+        isFalseThread = true;
+    }
+    
+    /**
+     * Detener hilo que detecta las monedas que ingresan
+     */
+    public static void stopListenerVending() {
+        isFalseThread = false;
+    }
+    
+    public static void green() throws InterruptedException {
+        yimiLibrary.green_led();
+        Thread.sleep(100);
+    }
+    
+    public static void red() throws InterruptedException {
+        yimiLibrary.red_led();
+        Thread.sleep(100);
+    }
+    
+    public static void yellow() throws InterruptedException {
+        yimiLibrary.yellow_led();
+        Thread.sleep(100);
+    }
+    
+    public static void off() throws InterruptedException {
+        yimiLibrary.leds_off();
+        Thread.sleep(100);
+    }
+    
+    public static void gps() throws InterruptedException {
+        yimiLibrary.coord_GPS();
+        Thread.sleep(100);
+    }
+    
+    public static void cobrar(int numero1) throws InterruptedException {
+        byte byte1 = (byte) numero1;
+        yimiLibrary.cobro(byte1);
+        Thread.sleep(100);
+    }
     
     /**
      * Hilo principal de ejecución de lecturas Vending y clasificacion de
      * monedas ingresadas.
      */
-    public Thread hilo = new Thread() {
-
+    public static Thread hilo = new Thread() {
         @Override
-        public void run() {
-
-            while (monedas_full) {
-                String respuesta = "";
-                try {
-                    //byte[] buffer = serialPort.readBytes(10);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
-                    //respuesta = toHexString(buffer);
-                    respuesta = serialPort.readHexString();
-                } catch (SerialPortException e) {
-                    System.out.println("Error al recibir datos del puerto: " + e.getMessage());
-                }
-                
-                String test = yimiLibrary.getdataHex();
-                
-                moneda = respuesta;
-                
-                if (moneda == null) {
-                    moneda = "0";
-                } else {
-                    System.err.println("---------> " + moneda);
-                }
-                
-                System.out.println(test + " -- " + moneda);
-                
-                switch (moneda) {
-                    case "f1 02":
-                        coinConvert = 0.50;
-                        break;
-                    case "f1 03":
-                        coinConvert = 1;
-                        break;
-                    case "f1 04":
-                        coinConvert = 2;
-                        break;
-                    case "f1 05":
-                        coinConvert = 5.0;
-                        break;
-                    case "f1 06":
-                        coinConvert = 10.0;
-                        break;
-                    case "f1 07":
-                        coinConvert = 20.0;
-                        break;
-                    default:
-                        break;
-                }
-                
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
+        public synchronized void run() {
+            while (!isMonedasFull) {
+                while (isFalseThread) {
+                    moneda = yimiLibrary.getdataHex();                
+                    switch (moneda) {
+                        case "f1 02":
+                            coinConvert = 0.50;
+                            break;
+                        case "f1 03":
+                            coinConvert = 1;
+                            break;
+                        case "f1 04":
+                            coinConvert = 2;
+                            break;
+                        case "f1 05":
+                            coinConvert = 5.0;
+                            break;
+                        case "f1 06":
+                            coinConvert = 10.0;
+                            break;
+                        case "f1 07":
+                            coinConvert = 20.0;
+                            break;
+                        default:
+                            break;
+                    }
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
-            System.out.println("Salida");
         }
     };
     
@@ -92,7 +212,7 @@ public class NuevoVending {
      *
      * @return valor de la moneda
      */
-    public double coincatch() {
+    public static double coincatch() {
         if (coinConvert > 0) {
             double coinBackup = coinConvert;
             coinConvert = 0;
@@ -105,104 +225,14 @@ public class NuevoVending {
     /**
      * Lectura de las monedas ingresadas en hilo
      */
-    public Thread threadCoinVending = new Thread() {
+    public static Thread threadCoinVending = new Thread() {
         @Override
-        public void run() {
-
-            while (coinService) {
-                double coin = coincatch();
+        public synchronized void run() {
+            while (!isCoinService) {
+                while (isFalseCoin) {
+                    double coin = coincatch();
                 
-                if (coin > 0) {
-                    System.out.println("Moneda: " + coin); 
-                } else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-            System.out.println("finalizo");
-        }
-    };
-    
-    public static SerialPort serialPort = new SerialPort("/dev/ttyUSB0");
-    public boolean cmd = true;
-    public static byte byteInicio1 = (byte) 0xF1;
-    public static byte byteInicio2 = (byte) 0x01;
-    
-    byte byteGPS1 = (byte) 0xF1;
-    byte byteGPS2 = (byte) 0x10;
-    
-    byte byteVerde1 = (byte) 0xF1;
-    byte byteVerde2 = (byte) 0x11;
-    
-    byte byteAmarillo1 = (byte) 0xF1;
-    byte byteAmarillo2 = (byte) 0x12;
-    
-    byte byteRojo1 = (byte) 0xF1;
-    byte byteRojo2 = (byte) 0x13;
-    
-    byte byteApagado1 = (byte) 0xF1;
-    byte byteApagado2 = (byte) 0x14;
-    
-    byte byteCobro1 = (byte) 0xA1;
-    byte byteCobro2 = (byte) 0x00;
-    byte byteCobro3 = (byte) 0x0A;
-    
-    byte byteFin1 = (byte) 0xF1;
-    byte byteFin2 = (byte) 0x00;
-    
-    public Thread threadCommands = new Thread() {
-        @Override
-        public void run() {
-            while (cmd) {
-                String respuesta = "";
-                try {
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteInicio1);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteInicio2);
-                    Thread.sleep(5);
-                    /*serialPort.writeByte(byteVerde1);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteVerde2);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteAmarillo1);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteAmarillo2);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteRojo1);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteRojo2);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteApagado1);
-                    Thread.sleep(5);
-                    serialPort.writeByte(byteApagado2);
-                    Thread.sleep(5);*/
-                    respuesta = serialPort.readHexString();
-                    System.out.println("--> " + respuesta);
-                    
-                    if (respuesta != null) {
-                        if (respuesta.equals("F0 F0 F0 F0")) {
-                            NuevoVending nv = new NuevoVending();
-                            nv.hilo.start();
-                            nv.threadCoinVending.start();
-                            /*Thread.sleep(5);
-                            serialPort.writeByte(byteFin1);
-                            Thread.sleep(5);
-                            serialPort.writeByte(byteFin2);
-                            Thread.sleep(5);
-                            serialPort.closePort();*/
-                            cmd = false;
-                        }
-                    }
-                    
-                    Thread.sleep(500);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(NuevoVending.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SerialPortException ex) {
-                    Logger.getLogger(NuevoVending.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println(coin);
                 }
             }
         }
@@ -212,27 +242,57 @@ public class NuevoVending {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws InterruptedException, SerialPortException {
-        NuevoVending nv = new NuevoVending();
+        boolean salir = false;
+        Scanner in = new Scanner(System.in);
         
-        serialPort = new SerialPort("/dev/ttyUSB0");
-        serialPort.openPort();
-        serialPort.setParams(
-                SerialPort.BAUDRATE_9600,
-                SerialPort.DATABITS_8,
-                SerialPort.STOPBITS_1,
-                SerialPort.PARITY_NONE
-        );
+        try {
+            String port = "ttyUSB1";
+            os(false, port);
+            openPort();
+            hilo.setPriority(hilo.MAX_PRIORITY);
+            hilo.start();
+            threadCoinVending.start();
+        } catch (InterruptedException | SerialPortException ex) {
+            System.out.println(ex.getMessage());
+        }
         
-        /*Thread.sleep(5);
-        serialPort.writeByte(byteInicio1);
-        Thread.sleep(5);
-        serialPort.writeByte(byteInicio2);
-        Thread.sleep(5);*/
-        
-        nv.threadCommands.start();
-        //nv.hilo.start();
-        //nv.threadCoinVending.start();
-        
+        while (!salir) {
+            System.out.println("Elige una opción");
+            System.out.println("1) Led verde");
+            System.out.println("2) Led amarillo");
+            System.out.println("3) Led rojo");
+            System.out.println("4) Apagar leds");
+            System.out.println("5) Coordenadas de GPS");
+            System.out.println("6) Cobrar");
+            System.out.println("0) Salir");
+            int opt = in.nextInt();
+            switch (opt) {
+                case 1:
+                    green();
+                    break;
+                case 2:
+                    yellow();
+                    break;
+                case 3:
+                    red();
+                    break;
+                case 4:
+                    off();
+                case 5:
+                    gps();
+                    break;
+                case 6:
+                    System.out.print("Dinero a cobrar: ");
+                    int dineros = in.nextInt();
+                    cobrar(dineros);
+                    break;
+                case 0:
+                    salir = true;
+                    break;
+                default:
+                    salir = true;
+                    break;
+            }
+        }
     }
-    
 }
