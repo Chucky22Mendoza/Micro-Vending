@@ -294,5 +294,11 @@ public class NuevoVending {
                     break;
             }
         }
+        
+        stopListenerVending();
+        stopVending();
+        endVending();
+        closePort();
+        isCoinService = true;
     }
 }
