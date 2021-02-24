@@ -153,9 +153,10 @@ public class NuevoVending {
         Thread.sleep(100);
     }
     
-    public static void gps() throws InterruptedException {
-        yimiLibrary.coord_GPS();
+    public static String gps() throws InterruptedException {
+        String respuesta = yimiLibrary.coord_GPS();
         Thread.sleep(100);
+        return respuesta;
     }
     
     public static void cobrar(int numero1) throws InterruptedException {
@@ -173,7 +174,7 @@ public class NuevoVending {
         public synchronized void run() {
             while (!isMonedasFull) {
                 while (isFalseThread) {
-                    moneda = yimiLibrary.getdataHex();                
+                    moneda = yimiLibrary.getdataHex();
                     switch (moneda) {
                         case "f1 02":
                             coinConvert = 0.50;
@@ -283,10 +284,9 @@ public class NuevoVending {
                 case 4:
                     off();
                 case 5:
-                    gps();
+                    System.out.println(gps());
                     break;
                 case 6:
-                    System.out.println("");
                     System.out.print("Dinero a cobrar: ");
                     int dineros = in.nextInt();
                     System.out.println("");

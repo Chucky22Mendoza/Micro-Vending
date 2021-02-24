@@ -45,7 +45,7 @@ public class Driver {
     private SerialPort serialPort = new SerialPort(hostVending);
 
     /**
-     * Metodo para seleccionar modo de operacion compatible con sistema
+     * Método para seleccionar modo de operación compatible con el sistema
      * operativo Windows. Puerto en Windows, ejemplo: COM8
      * 
      * @param port 
@@ -58,7 +58,7 @@ public class Driver {
     }
 
     /**
-     * Metodo para seleccionar modo de operacion compatible con sistema
+     * Método para seleccionar modo de operación compatible con el sistema
      * operativo Linux. Puerto en Linux, ejemplo: ttyUSB0
      *
      * @param port 
@@ -71,7 +71,7 @@ public class Driver {
     }
 
     /**
-     * Metodo para verificar conexion de la vending
+     * Método para verificar conexión de la vending
      *
      * @return
      */
@@ -85,7 +85,7 @@ public class Driver {
     }
 
     /**
-     * Metodo de conversion de lecturas USB-SERIAL
+     * Método de conversión de lecturas USB-SERIAL
      *
      * @return Valor HexadecimalString para validar tipo de moneda ingresado
      */
@@ -99,9 +99,25 @@ public class Driver {
         }
         return respuesta;
     }
+    
+    /**
+     * Método de conversión de lecturas USB-SERIAL
+     *
+     * @return Valor String para validar coordenadas de gps
+     */
+    public String getdataString() {
+        String respuesta = "";
+        try {
+            byte[] buffer = serialPort.readBytes(2);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
+            respuesta = Arrays.toString(buffer);
+        } catch (SerialPortException e) {
+            System.out.println("Error al recibir datos del puerto: " + e.getMessage());
+        }
+        return respuesta;
+    }
 
     /**
-     * Metodo para activar vending
+     * Método para activar vending
      *
      * @throws InterruptedException
      */
@@ -116,7 +132,7 @@ public class Driver {
     }
     
     /**
-     * Metodo para LED verde
+     * Método para encender el LED verde
      *
      * @throws InterruptedException
      */
@@ -131,7 +147,7 @@ public class Driver {
     }
     
     /**
-     * Metodo para LED amarillo
+     * Método para encender el LED amarillo
      *
      * @throws InterruptedException
      */
@@ -146,7 +162,7 @@ public class Driver {
     }
     
     /**
-     * Metodo para LED rojo
+     * Método para encender el LED rojo
      *
      * @throws InterruptedException
      */
@@ -161,7 +177,7 @@ public class Driver {
     }
     
     /**
-     * Metodo para apagar LEDs
+     * Método para apagar los LEDs
      *
      * @throws InterruptedException
      */
@@ -176,18 +192,23 @@ public class Driver {
     }
     
     /**
-     * Metodo para obtener coordenadas de GPS
+     * Método para obtener coordenadas de GPS
      *
+     * @return 
      * @throws InterruptedException
      */
-    public void coord_GPS() throws InterruptedException {
+    public String coord_GPS() throws InterruptedException {
+        String respuesta = "";
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteGPS1);
             serialPort.writeByte(byteGPS2);
+            byte[] buffer = serialPort.readBytes(2);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
+            respuesta = Arrays.toString(buffer);
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
+        return respuesta;
     }
     
     /**
@@ -208,7 +229,7 @@ public class Driver {
     }
     
     /**
-     * Metodo para desactivar vending
+     * Método para desactivar vending
      *
      * @throws InterruptedException
      */
@@ -223,7 +244,7 @@ public class Driver {
     }
 
     /**
-     * Metodo para abrir puerto seleccionado
+     * Método para abrir puerto seleccionado
      *
      * @throws SerialPortException
      * @throws InterruptedException
@@ -238,7 +259,7 @@ public class Driver {
     }
 
     /**
-     * Metodo para cerrar puerto
+     * Método para cerrar puerto
      *
      * @throws SerialPortException
      */
