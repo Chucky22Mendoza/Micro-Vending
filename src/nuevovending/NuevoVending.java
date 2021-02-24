@@ -26,14 +26,14 @@ public class NuevoVending {
     private static volatile double coinConvert;
     
     /**
-     * Metodo para ejecutar el hilo de transmición principal
+     * Método para ejecutar el hilo de transmición principal
      */
     public void threadStart() {
         isFalseThread = true;
     }
     
     /**
-     * Metodo para parar el hilo de transmición principal
+     * Método para parar el hilo de transmición principal
      */
     public void threadStop() {
         isFalseThread = false;
@@ -82,7 +82,7 @@ public class NuevoVending {
      * @throws SerialPortException 
      */
     public static void startVending() throws InterruptedException, SerialPortException {
-        yimiLibrary.on_vending();
+        yimiLibrary.onVending();
         Thread.sleep(100);
     }
     
@@ -93,7 +93,7 @@ public class NuevoVending {
      * @throws SerialPortException 
      */
     public static void stopVending() throws InterruptedException, SerialPortException {
-        yimiLibrary.off_vending();
+        yimiLibrary.offVending();
         Thread.sleep(100);
     }
     
@@ -104,7 +104,7 @@ public class NuevoVending {
      * @throws InterruptedException 
      */
     public static void closePort() throws SerialPortException, InterruptedException {
-        yimiLibrary.close_port();
+        yimiLibrary.closePort();
         Thread.sleep(100);
     }
     
@@ -115,7 +115,7 @@ public class NuevoVending {
      * @throws InterruptedException 
      */
     public static void openPort() throws SerialPortException, InterruptedException {
-        yimiLibrary.open_port();
+        yimiLibrary.openPort();
         Thread.sleep(100);
     }
     
@@ -133,32 +133,80 @@ public class NuevoVending {
         isFalseThread = false;
     }
     
+    /**
+     * Encender led verde
+     * 
+     * @throws InterruptedException 
+     */
     public static void green() throws InterruptedException {
-        yimiLibrary.green_led();
+        yimiLibrary.greenLed();
         Thread.sleep(100);
     }
     
+    /**
+     * Encender led rojo
+     * 
+     * @throws InterruptedException 
+     */
     public static void red() throws InterruptedException {
-        yimiLibrary.red_led();
+        yimiLibrary.redLed();
         Thread.sleep(100);
     }
     
+    /**
+     * Encender led amarillo
+     * 
+     * @throws InterruptedException 
+     */
     public static void yellow() throws InterruptedException {
-        yimiLibrary.yellow_led();
+        yimiLibrary.yellowLed();
         Thread.sleep(100);
     }
     
+    /**
+     * Apagar leds
+     * 
+     * @throws InterruptedException 
+     */
     public static void off() throws InterruptedException {
-        yimiLibrary.leds_off();
+        yimiLibrary.ledsOff();
         Thread.sleep(100);
     }
     
-    public static String gps() throws InterruptedException {
-        String respuesta = yimiLibrary.coord_GPS();
+    /**
+     * Obtener coordenadas del gps
+     * 
+     * @return
+     * @throws InterruptedException 
+     */
+    private static double[] gps() throws InterruptedException {
+        String respuesta = yimiLibrary.coordGPS();
+        String[] coordStr = respuesta.replaceAll("\\[", "").replace("\\]", "").replace("\\s", "").split(",");
+        double[] coordenadas = new double[coordStr.length];
+        
+        for (int i = 0; i < coordStr.length; i++) {
+            System.out.println("String -> " + coordStr[i]);
+            try {
+                coordenadas[i] = Double.parseDouble(coordStr[i]);
+            } catch (NumberFormatException nfe) {
+                System.out.println(nfe.getMessage());
+            };
+        }
+        
+        for (int i = 0; i < coordenadas.length; i++) {
+            System.out.println("Double -> " + coordenadas[i]);
+        }
         Thread.sleep(100);
-        return respuesta;
+        
+        return coordenadas;
     }
     
+    /**
+     * Mostrar en display el dinero a cobrar
+     * 
+     * @param numero1
+     * @throws InterruptedException 
+     */
     public static void cobrar(int numero1) throws InterruptedException {
         byte byte1 = (byte) numero1;
         yimiLibrary.cobro(byte1);
@@ -242,6 +290,8 @@ public class NuevoVending {
     
     /**
      * @param args the command line arguments
+     * @throws java.lang.InterruptedException
+     * @throws jssc.SerialPortException
      */
     public static void main(String[] args) throws InterruptedException, SerialPortException {
         boolean isExit = false;
@@ -284,7 +334,7 @@ public class NuevoVending {
                 case 4:
                     off();
                 case 5:
-                    System.out.println(gps());
+                    gps();
                     break;
                 case 6:
                     System.out.print("Dinero a cobrar: ");

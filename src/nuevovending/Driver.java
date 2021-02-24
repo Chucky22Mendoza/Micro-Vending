@@ -45,7 +45,7 @@ public class Driver {
     private SerialPort serialPort = new SerialPort(hostVending);
 
     /**
-     * Método para seleccionar modo de operación compatible con el sistema
+     * Seleccionar modo de operación compatible con el sistema
      * operativo Windows. Puerto en Windows, ejemplo: COM8
      * 
      * @param port 
@@ -58,7 +58,7 @@ public class Driver {
     }
 
     /**
-     * Método para seleccionar modo de operación compatible con el sistema
+     * Seleccionar modo de operación compatible con el sistema
      * operativo Linux. Puerto en Linux, ejemplo: ttyUSB0
      *
      * @param port 
@@ -71,7 +71,7 @@ public class Driver {
     }
 
     /**
-     * Método para verificar conexión de la vending
+     * Verificar conexión de la vending
      *
      * @return
      */
@@ -85,7 +85,7 @@ public class Driver {
     }
 
     /**
-     * Método de conversión de lecturas USB-SERIAL
+     * Conversión de lecturas USB-SERIAL
      *
      * @return Valor HexadecimalString para validar tipo de moneda ingresado
      */
@@ -101,7 +101,7 @@ public class Driver {
     }
     
     /**
-     * Método de conversión de lecturas USB-SERIAL
+     * Conversión de lecturas USB-SERIAL
      *
      * @return Valor String para validar coordenadas de gps
      */
@@ -117,11 +117,11 @@ public class Driver {
     }
 
     /**
-     * Método para activar vending
+     * Activar vending
      *
      * @throws InterruptedException
      */
-    public void on_vending() throws InterruptedException {
+    public void onVending() throws InterruptedException {
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteInicio1);
@@ -132,11 +132,11 @@ public class Driver {
     }
     
     /**
-     * Método para encender el LED verde
+     * Encender el LED verde
      *
      * @throws InterruptedException
      */
-    public void green_led() throws InterruptedException {
+    public void greenLed() throws InterruptedException {
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteVerde1);
@@ -147,11 +147,11 @@ public class Driver {
     }
     
     /**
-     * Método para encender el LED amarillo
+     * Encender el LED amarillo
      *
      * @throws InterruptedException
      */
-    public void yellow_led() throws InterruptedException {
+    public void yellowLed() throws InterruptedException {
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteAmarillo1);
@@ -162,11 +162,11 @@ public class Driver {
     }
     
     /**
-     * Método para encender el LED rojo
+     * Encender el LED rojo
      *
      * @throws InterruptedException
      */
-    public void red_led() throws InterruptedException {
+    public void redLed() throws InterruptedException {
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteRojo1);
@@ -177,11 +177,11 @@ public class Driver {
     }
     
     /**
-     * Método para apagar los LEDs
+     * Apagar los LEDs
      *
      * @throws InterruptedException
      */
-    public void leds_off() throws InterruptedException {
+    public void ledsOff() throws InterruptedException {
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteApagado1);
@@ -192,18 +192,18 @@ public class Driver {
     }
     
     /**
-     * Método para obtener coordenadas de GPS
+     * Obtener coordenadas de GPS
      *
      * @return 
      * @throws InterruptedException
      */
-    public String coord_GPS() throws InterruptedException {
+    public String coordGPS() throws InterruptedException {
         String respuesta = "";
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteGPS1);
             serialPort.writeByte(byteGPS2);
-            byte[] buffer = serialPort.readBytes(2);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
+            byte[] buffer = serialPort.readBytes(10);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
             respuesta = Arrays.toString(buffer);
         } catch (SerialPortException ex) {
             System.out.println(ex);
@@ -212,7 +212,7 @@ public class Driver {
     }
     
     /**
-     * Mandar bytes de cobro
+     * Bytes de cobro
      * 
      * @param byteHex1
      * @throws InterruptedException
@@ -229,11 +229,11 @@ public class Driver {
     }
     
     /**
-     * Método para desactivar vending
+     * Desactivar vending
      *
      * @throws InterruptedException
      */
-    public void off_vending() throws InterruptedException {
+    public void offVending() throws InterruptedException {
         try {
             Thread.sleep(15);
             serialPort.writeByte(byteFin1);
@@ -244,26 +244,25 @@ public class Driver {
     }
 
     /**
-     * Método para abrir puerto seleccionado
+     * Abrir puerto seleccionado
      *
      * @throws SerialPortException
      * @throws InterruptedException
      */
-    public void open_port() throws SerialPortException, InterruptedException {
+    public void openPort() throws SerialPortException, InterruptedException {
         serialPort.openPort();
         serialPort.setParams(SerialPort.BAUDRATE_9600,
                 SerialPort.DATABITS_8,
                 SerialPort.STOPBITS_1,
                 SerialPort.PARITY_NONE);
-
     }
 
     /**
-     * Método para cerrar puerto
+     * Cerrar puerto
      *
      * @throws SerialPortException
      */
-    public void close_port() throws SerialPortException {
+    public void closePort() throws SerialPortException {
         serialPort.closePort();
     }
 }
