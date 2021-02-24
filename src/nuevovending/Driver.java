@@ -203,8 +203,8 @@ public class Driver {
             Thread.sleep(15);
             serialPort.writeByte(byteGPS1);
             serialPort.writeByte(byteGPS2);
-            byte[] buffer = serialPort.readBytes(10);//= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
-            respuesta = Arrays.toString(buffer);
+            respuesta = serialPort.readString(); //= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
+            //respuesta = Arrays.toString(buffer);
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
