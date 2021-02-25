@@ -333,6 +333,7 @@ public class NuevoVending {
                     break;
                 case 4:
                     off();
+                    break;
                 case 5:
                     gps();
                     break;
