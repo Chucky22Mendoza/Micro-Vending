@@ -182,20 +182,13 @@ public class NuevoVending {
     private static String[] gps() throws InterruptedException {
         String respuesta = yimiLibrary.coordGPS();
         String[] coordStr = respuesta.split(",");
-        //double[] coordenadas = new double[coordStr.length];
+        coordStr[0] = coordStr[0].trim();
+        coordStr[1] = coordStr[1].trim();
+        coordStr[2] = coordStr[2].trim();
         
         for (int i = 0; i < coordStr.length; i++) {
-            System.out.println("String -> " + coordStr[i].trim());
-            /*try {
-                coordenadas[i] = Double.parseDouble(coordStr[i]);
-            } catch (NumberFormatException nfe) {
-                System.out.println(nfe.getMessage());
-            };*/
+            System.out.println("String -> " + coordStr[i]);
         }
-        
-        /*for (int i = 0; i < coordenadas.length; i++) {
-            System.out.println("Double -> " + coordenadas[i]);
-        }*/
         Thread.sleep(100);
         
         return coordStr;
