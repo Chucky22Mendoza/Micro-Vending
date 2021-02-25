@@ -204,8 +204,6 @@ public class Driver {
             serialPort.writeByte(byteGPS1);
             serialPort.writeByte(byteGPS2);
             respuesta = serialPort.readString(31); //= serialPort.readBytes(totBytes);//Read 10 bytes from serial port
-            //respuesta = Arrays.toString(buffer);
-            System.out.println(respuesta);
         } catch (SerialPortException ex) {
             System.out.println(ex);
         }
