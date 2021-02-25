@@ -181,7 +181,7 @@ public class NuevoVending {
      */
     private static double[] gps() throws InterruptedException {
         String respuesta = yimiLibrary.coordGPS();
-        String[] coordStr = respuesta.replaceAll("\\[", "").replace("\\]", "").replace("\\s", "").split(",");
+        String[] coordStr = respuesta.trim().replaceAll("\\[", "").replace("\\]", "").replace("\\s", "").split(",");
         double[] coordenadas = new double[coordStr.length];
         
         for (int i = 0; i < coordStr.length; i++) {
