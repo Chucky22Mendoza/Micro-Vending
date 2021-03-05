@@ -254,8 +254,9 @@ public class NuevoVending {
      *
      * @return valor de la moneda
      */
-    public static double coincatch() {
+    public static double coincatch() throws InterruptedException, SerialPortException {
         if (coinConvert > 0) {
+            startVending();
             double coinBackup = coinConvert;
             coinConvert = 0;
             return coinBackup;
@@ -272,9 +273,15 @@ public class NuevoVending {
         public synchronized void run() {
             while (!isCoinService) {
                 while (isFalseCoin) {
-                    double coin = coincatch();
-                    if (coin > 0) { 
-                        System.out.println(coin);
+                    try {
+                        double coin = coincatch();
+                        if (coin > 0) {
+                            System.out.println(coin);
+                        }
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(NuevoVending.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (SerialPortException ex) {
+                        Logger.getLogger(NuevoVending.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -294,7 +301,6 @@ public class NuevoVending {
             String port = "ttyUSB0";
             os(false, port);
             openPort();
-            startVending();
             hilo.setPriority(Thread.MAX_PRIORITY);
             hilo.start();
             threadCoinVending.start();
