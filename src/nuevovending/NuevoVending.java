@@ -294,6 +294,7 @@ public class NuevoVending {
             String port = "ttyUSB0";
             os(false, port);
             openPort();
+            startVending();
             hilo.setPriority(Thread.MAX_PRIORITY);
             hilo.start();
             threadCoinVending.start();
