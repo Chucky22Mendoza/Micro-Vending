@@ -126,7 +126,7 @@ public class Driver {
             Thread.sleep(15);
             serialPort.writeByte(byteInicio1);
             serialPort.writeByte(byteInicio2);
-            System.out.println(serialPort.readBytes().length);
+            //System.out.println(serialPort.readBytes().length);
             //byte[] bytes = serialPort.readBytes(11);
             String respuesta = serialPort.readHexString();
             System.out.println(respuesta);

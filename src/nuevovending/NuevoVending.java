@@ -293,22 +293,13 @@ public class NuevoVending {
      * @throws jssc.SerialPortException
      */
     public static void main(String[] args) throws InterruptedException, SerialPortException {
-        boolean isExit = false;
-        Scanner in = new Scanner(System.in);
+        //boolean isExit = false;
+        //Scanner in = new Scanner(System.in);
         
-        try {
-            String port = "ttyUSB0";
-            os(false, port);
-            openPort();
-            hilo.setPriority(Thread.MAX_PRIORITY);
-            hilo.start();
-            threadCoinVending.start();
-            startVending();
-            System.out.println("Pasó el vending");
-        } catch (InterruptedException | SerialPortException ex) {
-            System.out.println(ex.getMessage());
-        }
+        Init init = new Init();
+        init.setVisible(true);
         
+        /*
         while (!isExit) {
             System.out.println("");
             System.out.println("Opciones de tarjeta de cobro");
@@ -351,13 +342,15 @@ public class NuevoVending {
                     isExit = true;
                     break;
             }
-        }
+        }*/
         
+        /*
         stopListenerVending();
         stopVending();
         endVending();
         closePort();
         isCoinService = true;
         System.exit(0);
+        */
     }
 }
