@@ -256,7 +256,6 @@ public class NuevoVending {
      */
     public static double coincatch() throws InterruptedException, SerialPortException {
         if (coinConvert > 0) {
-            startVending();
             double coinBackup = coinConvert;
             coinConvert = 0;
             return coinBackup;
@@ -304,6 +303,8 @@ public class NuevoVending {
             hilo.setPriority(Thread.MAX_PRIORITY);
             hilo.start();
             threadCoinVending.start();
+            startVending();
+            System.out.println("Pasó el vending");
         } catch (InterruptedException | SerialPortException ex) {
             System.out.println(ex.getMessage());
         }
