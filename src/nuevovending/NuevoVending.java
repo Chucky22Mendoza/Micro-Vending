@@ -293,13 +293,13 @@ public class NuevoVending {
      * @throws jssc.SerialPortException
      */
     public static void main(String[] args) throws InterruptedException, SerialPortException {
-        //boolean isExit = false;
-        //Scanner in = new Scanner(System.in);
+        boolean isExit = false;
+        Scanner in = new Scanner(System.in);
         
-        Init init = new Init();
-        init.setVisible(true);
+//        Init init = new Init();
+//        init.setVisible(true);
         
-        /*
+        
         while (!isExit) {
             System.out.println("");
             System.out.println("Opciones de tarjeta de cobro");
@@ -342,7 +342,7 @@ public class NuevoVending {
                     isExit = true;
                     break;
             }
-        }*/
+        }
         
         /*
         stopListenerVending();
