@@ -296,6 +296,18 @@ public class NuevoVending {
         boolean isExit = false;
         Scanner in = new Scanner(System.in);
         
+        try {
+            String port = "ttyUSB0";
+            os(false, port);
+            openPort();
+            hilo.start();
+            threadCoinVending.start();
+            startVending();
+            System.out.println("Pasó el vending");
+        } catch (InterruptedException | SerialPortException ex) {
+            System.out.println(ex.getMessage());
+        }
+        
 //        Init init = new Init();
 //        init.setVisible(true);
         
